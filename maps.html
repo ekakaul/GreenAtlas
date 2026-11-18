@@ -244,6 +244,7 @@
                         <div class="map-legend-row"><span class="legend-dot legend-safe"></span><span>Safe flora</span></div>
                         <div class="map-legend-row"><span class="legend-dot legend-irritant"></span><span>Mild irritant</span></div>
                         <div class="map-legend-row"><span class="legend-dot legend-toxic"></span><span>Toxic</span></div>
+                        <div class="map-legend-row"><span class="legend-dot legend-unknown"></span><span>Not assessed</span></div>
                     </div>
                 </aside>
             </div>
@@ -268,9 +269,11 @@
                         </tr>
                     </thead>
                     <tbody id="map-sector-table-body">
-                        <tr class="sector-table-interactive" data-zone="Pine Ridge Belt" tabindex="0" role="button" aria-pressed="false" title="Click to highlight Pine Ridge Belt on map">
+                        <tr class="sector-table-interactive" data-zone="Pine Ridge Belt" title="Click to highlight Pine Ridge Belt on map">
                             <td>
-                                <strong style="color: var(--primary);"><i class="fa-solid fa-tree"></i> Pine Ridge Belt</strong>
+                                <button type="button" class="sector-select-btn" data-zone="Pine Ridge Belt" aria-pressed="false">
+                                    <i class="fa-solid fa-tree"></i> Pine Ridge Belt
+                                </button>
                                 <div style="font-size: 0.75rem; color: var(--text-muted);">Northern Coniferous Perimeter</div>
                             </td>
                             <td class="font-mono" style="font-size: 0.81rem;">840m – 880m MSL</td>
@@ -278,9 +281,11 @@
                             <td><em>Pinus roxburghii</em>, <em>Mallotus philippensis</em>, <em>Quercus leucotrichophora</em></td>
                             <td><span class="specimen-count-badge" id="density-row-pine">25</span></td>
                         </tr>
-                        <tr class="sector-table-interactive" data-zone="Academic Avenue" tabindex="0" role="button" aria-pressed="false" title="Click to highlight Academic Avenue on map">
+                        <tr class="sector-table-interactive" data-zone="Academic Avenue" title="Click to highlight Academic Avenue on map">
                             <td>
-                                <strong style="color: var(--primary);"><i class="fa-solid fa-road"></i> Academic Avenue</strong>
+                                <button type="button" class="sector-select-btn" data-zone="Academic Avenue" aria-pressed="false">
+                                    <i class="fa-solid fa-road"></i> Academic Avenue
+                                </button>
                                 <div style="font-size: 0.75rem; color: var(--text-muted);">Central Boulevard Corridor</div>
                             </td>
                             <td class="font-mono" style="font-size: 0.81rem;">815m – 830m MSL</td>
@@ -288,9 +293,11 @@
                             <td><em>Bauhinia variegata</em>, <em>Dalbergia sissoo</em>, <em>Cassia fistula</em></td>
                             <td><span class="specimen-count-badge" id="density-row-avenue">30</span></td>
                         </tr>
-                        <tr class="sector-table-interactive" data-zone="Lower Scrublands" tabindex="0" role="button" aria-pressed="false" title="Click to highlight Lower Scrublands on map">
+                        <tr class="sector-table-interactive" data-zone="Lower Scrublands" title="Click to highlight Lower Scrublands on map">
                             <td>
-                                <strong style="color: var(--primary);"><i class="fa-solid fa-leaf"></i> Lower Scrublands</strong>
+                                <button type="button" class="sector-select-btn" data-zone="Lower Scrublands" aria-pressed="false">
+                                    <i class="fa-solid fa-leaf"></i> Lower Scrublands
+                                </button>
                                 <div style="font-size: 0.75rem; color: var(--text-muted);">Arid Southern Terraces</div>
                             </td>
                             <td class="font-mono" style="font-size: 0.81rem;">780m – 810m MSL</td>
@@ -298,9 +305,11 @@
                             <td><em>Acacia modesta</em>, <em>Calotropis procera</em>, <em>Ziziphus mauritiana</em></td>
                             <td><span class="specimen-count-badge" id="density-row-scrub">30</span></td>
                         </tr>
-                        <tr class="sector-table-interactive" data-zone="Ravine Corridors" tabindex="0" role="button" aria-pressed="false" title="Click to highlight Ravine Corridors on map">
+                        <tr class="sector-table-interactive" data-zone="Ravine Corridors" title="Click to highlight Ravine Corridors on map">
                             <td>
-                                <strong style="color: var(--primary);"><i class="fa-solid fa-water"></i> Ravine Corridors</strong>
+                                <button type="button" class="sector-select-btn" data-zone="Ravine Corridors" aria-pressed="false">
+                                    <i class="fa-solid fa-water"></i> Ravine Corridors
+                                </button>
                                 <div style="font-size: 0.75rem; color: var(--text-muted);">Shaded Nullah Channels</div>
                             </td>
                             <td class="font-mono" style="font-size: 0.81rem;">825m – 865m MSL</td>

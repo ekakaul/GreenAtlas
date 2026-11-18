@@ -1,12 +1,15 @@
 /**
  * SMVDU Green Atlas: Core Data Engine & IndexedDB Storage Architecture
- * 175 catalogued taxa: 116 mapped field records + 59 verified datasheet additions.
+ * Version: 3.1.5
+ * 175 catalogued entries (170 unique taxa after deduplicating 5 synonyms).
  * The IndexedDB name is intentionally unchanged so existing field observations survive upgrades.
  */
 
 const DB_NAME = 'SMVDU_BIO_INDEXED_DB';
 const DB_VERSION = 4;
 const STORE_NAME = 'specimens';
+const SEED_VERSION = '3.1.5';
+const SEED_KEY = 'smvdu_seed_version';
 
 let _cachedFloraRecords = [];
 let _dbInstance = null;
@@ -269,8 +272,8 @@ const INITIAL_FLORA_RECORDS = [
         ],
         "elevation": "870m MSL",
         "toxicity": "Mild Irritant",
-        "toxicAgent": "Ptaquiloside (toxic on livestock ingestion)",
-        "firstAid": "Wash skin; do not consume raw shoots.",
+        "toxicAgent": "Ptaquiloside & thiaminase (irritant/carcinogenic if ingested raw)",
+        "firstAid": "Wash skin after handling; never consume raw crosiers.",
         "phenology": "Spore sporulation: Jul - Oct",
         "iucn": "LC",
         "notes": "Rhizomatous fern colonizing pine forest understory floor where needle mulch accumulates.",
@@ -378,9 +381,9 @@ const INITIAL_FLORA_RECORDS = [
             74.9535
         ],
         "elevation": "840m MSL",
-        "toxicity": "Safe",
-        "toxicAgent": "Raw tubers contain saponins (edible after boiling)",
-        "firstAid": "Do not consume raw tubers.",
+        "toxicity": "Mild Irritant",
+        "toxicAgent": "Raw tubers contain saponins (toxic unless thoroughly boiled)",
+        "firstAid": "Do not consume raw tubers; wash hands after handling cut rhizomes.",
         "phenology": "Flowering: Aug - Oct; Fruiting: Nov - Jan",
         "iucn": "LC",
         "notes": "Twinning herbaceous climber; tubers collected traditionally during lean famine periods.",
@@ -796,9 +799,9 @@ const INITIAL_FLORA_RECORDS = [
             74.9541
         ],
         "elevation": "821m MSL",
-        "toxicity": "Mild Irritant",
-        "toxicAgent": "Karanjin furanoflavonol in seeds (toxic if ingested)",
-        "firstAid": "External seed oil is therapeutic; avoid ocular contact.",
+        "toxicity": "Toxic",
+        "toxicAgent": "Karanjin & pongamol furanoflavonols in seeds (toxic if ingested)",
+        "firstAid": "Do not ingest seeds or raw oil; rinse skin/eyes with water on contact.",
         "phenology": "Flowering: Apr - Jun; Fruiting: Dec - Feb",
         "iucn": "LC",
         "notes": "Deep shade evergreen canopy; seed oil evaluated for sustainable bio-diesel feedstock.",
@@ -1060,9 +1063,9 @@ const INITIAL_FLORA_RECORDS = [
             74.9533
         ],
         "elevation": "815m MSL",
-        "toxicity": "Mild Irritant",
-        "toxicAgent": "Vincristine & vinblastine antitumor alkaloids",
-        "firstAid": "Do not ingest raw plant tissue.",
+        "toxicity": "Toxic",
+        "toxicAgent": "Vincristine & vinblastine cytotoxic alkaloids",
+        "firstAid": "Seek immediate medical attention if any plant part is ingested.",
         "phenology": "Flowering: Year-round",
         "iucn": "LC",
         "notes": "Continuous pink or white blooms; source of chemotherapy drugs vincristine and vinblastine.",
@@ -1460,7 +1463,7 @@ const INITIAL_FLORA_RECORDS = [
         "toxicAgent": "Cannabinoids (THC/CBD) in glandular hairs",
         "firstAid": "Wash hands post handling.",
         "phenology": "Flowering: Jul - Oct",
-        "iucn": "LC",
+        "iucn": "NE",
         "notes": "Aggressive ruderal weed growing in waste areas; fibrous stems and aromatic resin.",
         "photo": null,
         "verified": false
@@ -2076,10 +2079,11 @@ const INITIAL_FLORA_RECORDS = [
         "toxicAgent": "Phytocannabinoids",
         "firstAid": "Wash hands post handling.",
         "phenology": "Flowering: Aug - Oct",
-        "iucn": "LC",
+        "iucn": "NE",
         "notes": "Luxuriant damp ravine stands reaching heights exceeding 3 meters during late monsoon.",
         "photo": null,
-        "verified": false
+        "verified": false,
+        "duplicateOf": "SMVDU-FL-066"
     },
     {
         "id": "SMVDU-FL-095",
@@ -2162,7 +2166,7 @@ const INITIAL_FLORA_RECORDS = [
         "elevation": "830m MSL",
         "toxicity": "Mild Irritant",
         "toxicAgent": "Histamine, acetylcholine & formic acid in silica stinging hairs",
-        "firstAid": "Apply alkaline paste (baking soda) or crush wild dock leaves onto stung dermis.",
+        "firstAid": "Wash stung skin with soap and cool water; apply a cold compress or baking soda paste.",
         "phenology": "Flowering: May - Sep",
         "iucn": "LC",
         "notes": "Intense immediate contact burning sensation from hypodermic stinging hairs; young leaves boiled for tea.",
@@ -2568,7 +2572,7 @@ const INITIAL_FLORA_RECORDS = [
     {
         "id": "SMVDU-FL-117",
         "verified": true,
-        "botanicalName": "Ageratum conyzoides / Ageratum houstonianum",
+        "botanicalName": "Ageratum conyzoides",
         "commonName": "Billygoat Weed / Flossflower",
         "dogriName": "Neelam Phool",
         "family": "Asteraceae",
@@ -2578,13 +2582,16 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Nectar source for butterflies and insect pollinators",
-        "photo": null
+        "photo": null,
+        "synonyms": [
+            "Ageratum houstonianum"
+        ]
     },
     {
         "id": "SMVDU-FL-118",
@@ -2599,11 +2606,11 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
-        "iucn": "LC",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
+        "iucn": "VU",
         "notes": "Year-round evergreen structure and avian perching",
         "photo": null
     },
@@ -2620,10 +2627,10 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Groundcover microhabitat and indoor air filtration",
         "photo": null
@@ -2641,10 +2648,10 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Soil stabilization, carbon sequestration, and dense wildlife cover",
         "photo": null
@@ -2662,10 +2669,10 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Major generalist nectar and pollen source for native bees",
         "photo": null
@@ -2673,7 +2680,7 @@ const INITIAL_FLORA_RECORDS = [
     {
         "id": "SMVDU-FL-122",
         "verified": true,
-        "botanicalName": "Callistemon lanceolatus (Melaleuca citrina)",
+        "botanicalName": "Callistemon lanceolatus",
         "commonName": "Bottlebrush",
         "dogriName": "Botal Brush",
         "family": "Myrtaceae",
@@ -2683,13 +2690,17 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "High-nectar forage for sunbirds, honeybees, and butterflies",
-        "photo": null
+        "photo": null,
+        "duplicateOf": "SMVDU-FL-039",
+        "synonyms": [
+            "Melaleuca citrina"
+        ]
     },
     {
         "id": "SMVDU-FL-123",
@@ -2704,10 +2715,10 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Attracts wild bees, hoverflies, and seed-eating birds",
         "photo": null
@@ -2725,10 +2736,10 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Massive shade canopy, carbon sink, and avian nesting habitat",
         "photo": null
@@ -2736,7 +2747,7 @@ const INITIAL_FLORA_RECORDS = [
     {
         "id": "SMVDU-FL-125",
         "verified": true,
-        "botanicalName": "Coleus scutellarioides (Plectranthus scutellarioides)",
+        "botanicalName": "Coleus scutellarioides",
         "commonName": "Coleus / Painted Nettle",
         "dogriName": "Coleus",
         "family": "Lamiaceae",
@@ -2746,13 +2757,16 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Flowers support small bees; foliage provides ground cover",
-        "photo": null
+        "photo": null,
+        "synonyms": [
+            "Plectranthus scutellarioides"
+        ]
     },
     {
         "id": "SMVDU-FL-126",
@@ -2767,10 +2781,10 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Keystone resource for fig wasps and frugivorous birds",
         "photo": null
@@ -2788,10 +2802,10 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Flowers support bees; fruits feed parakeets, bulbuls, and squirrels",
         "photo": null
@@ -2809,10 +2823,10 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Dense hedge cover for garden insects and small birds",
         "photo": null
@@ -2830,10 +2844,10 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Nitrogen-fixing legume; rich nectar source for sunbirds, mynas, and crows",
         "photo": null
@@ -2851,10 +2865,10 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Provides dense evergreen shelter in landscaped beds",
         "photo": null
@@ -2872,10 +2886,10 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Drought-hardy rockery plant; cyathia visited by ants and small flies",
         "photo": null
@@ -2883,7 +2897,7 @@ const INITIAL_FLORA_RECORDS = [
     {
         "id": "SMVDU-FL-132",
         "verified": true,
-        "botanicalName": "Bergera koenigii (Murraya koenigii)",
+        "botanicalName": "Bergera koenigii",
         "commonName": "Curry Leaf Tree",
         "dogriName": "Darankari / Kadi Patta",
         "family": "Rutaceae",
@@ -2893,13 +2907,16 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Host plant for Swallowtail butterflies (Papilio polytes); berries eaten by birds",
-        "photo": null
+        "photo": null,
+        "synonyms": [
+            "Murraya koenigii"
+        ]
     },
     {
         "id": "SMVDU-FL-133",
@@ -2914,10 +2931,10 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Ancient living fossil gymnosperm providing architectural garden habitat",
         "photo": null
@@ -2935,10 +2952,10 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Tubular red blooms attract long-tongued butterflies, moths, and sunbirds",
         "photo": null
@@ -2956,10 +2973,10 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "High carbon-sequestering CAM succulent and drought-tolerant soil binder",
         "photo": null
@@ -2967,7 +2984,7 @@ const INITIAL_FLORA_RECORDS = [
     {
         "id": "SMVDU-FL-136",
         "verified": true,
-        "botanicalName": "Ficus microcarpa (Ficus retusa)",
+        "botanicalName": "Ficus microcarpa",
         "commonName": "Ficus Topiary / Indian Laurel",
         "dogriName": "Pilkhan",
         "family": "Moraceae",
@@ -2977,13 +2994,16 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Fig wasp mutualism; dense pruned canopy provides bird nesting sites",
-        "photo": null
+        "photo": null,
+        "synonyms": [
+            "Ficus retusa"
+        ]
     },
     {
         "id": "SMVDU-FL-137",
@@ -2998,11 +3018,11 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
-        "iucn": "LC",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
+        "iucn": "EN",
         "notes": "Provides vertical structure, perching sites, and fruit for frugivorous birds",
         "photo": null
     },
@@ -3019,10 +3039,10 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Nectar-rich flowers for butterflies; dense thorny hedge shelters sparrows",
         "photo": null
@@ -3030,7 +3050,7 @@ const INITIAL_FLORA_RECORDS = [
     {
         "id": "SMVDU-FL-139",
         "verified": true,
-        "botanicalName": "Cuphea llavea / Cuphea procumbens",
+        "botanicalName": "Cuphea llavea",
         "commonName": "Hawaiian Bell / Cigar Flower",
         "dogriName": "Cuphea",
         "family": "Lythraceae",
@@ -3040,13 +3060,16 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Continuous tubular floral nectar for bees and hoverflies",
-        "photo": null
+        "photo": null,
+        "synonyms": [
+            "Cuphea procumbens"
+        ]
     },
     {
         "id": "SMVDU-FL-140",
@@ -3061,10 +3084,10 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Major nectar source for sunbirds, carpenter bees, and butterflies",
         "photo": null
@@ -3082,10 +3105,10 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Tiered pagoda canopy provides shade; fruits eaten by bats and birds",
         "photo": null
@@ -3103,10 +3126,10 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Soil moisture retention and low-lying insect microhabitat",
         "photo": null
@@ -3124,10 +3147,10 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Globose fragrant flower heads attract bees, butterflies, and fruit bats",
         "photo": null
@@ -3145,10 +3168,10 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Pioneer soil binder on riverbanks and disturbed slopes; shelter for ground birds",
         "photo": null
@@ -3156,7 +3179,7 @@ const INITIAL_FLORA_RECORDS = [
     {
         "id": "SMVDU-FL-145",
         "verified": true,
-        "botanicalName": "Citrus limon / Citrus pseudolimon",
+        "botanicalName": "Citrus limon",
         "commonName": "Lemon / Hill Lemon Galgal",
         "dogriName": "Galgal / Kimb",
         "family": "Rutaceae",
@@ -3166,13 +3189,16 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Host plant for Lime Butterfly (Papilio demoleus); fragrant flowers feed honeybees",
-        "photo": null
+        "photo": null,
+        "synonyms": [
+            "Citrus pseudolimon"
+        ]
     },
     {
         "id": "SMVDU-FL-146",
@@ -3187,10 +3213,10 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Dense evergreen shade canopy; supports pollinators and frugivorous wildlife",
         "photo": null
@@ -3208,10 +3234,10 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "High-density low border plant attracting small native bees and hoverflies",
         "photo": null
@@ -3229,10 +3255,10 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Dense groundcover suppressing weeds and retaining soil moisture",
         "photo": null
@@ -3240,7 +3266,7 @@ const INITIAL_FLORA_RECORDS = [
     {
         "id": "SMVDU-FL-149",
         "verified": true,
-        "botanicalName": "Quercus leucotrichophora (Quercus spp.)",
+        "botanicalName": "Quercus leucotrichophora",
         "commonName": "White Oak / Banj Oak",
         "dogriName": "Baan / Ringa",
         "family": "Fagaceae",
@@ -3250,13 +3276,17 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Keystone Himalayan watershed tree; acorns feed squirrels, jays, and bears",
-        "photo": null
+        "photo": null,
+        "duplicateOf": "SMVDU-FL-004",
+        "synonyms": [
+            "Quercus spp."
+        ]
     },
     {
         "id": "SMVDU-FL-150",
@@ -3271,10 +3301,10 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Shade-adapted understory palm improving indoor/shaded microclimates",
         "photo": null
@@ -3292,10 +3322,10 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Bright red blooms attract birds and bees; wild hills form stabilizes rocky slopes",
         "photo": null
@@ -3303,7 +3333,7 @@ const INITIAL_FLORA_RECORDS = [
     {
         "id": "SMVDU-FL-152",
         "verified": true,
-        "botanicalName": "Millettia pinnata (Pongamia pinnata)",
+        "botanicalName": "Millettia pinnata",
         "commonName": "Pongam / Karanj / Indian Beech",
         "dogriName": "Karanj / Sukhchain",
         "family": "Fabaceae",
@@ -3313,13 +3343,17 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Nitrogen-fixing legume tree; drought-resistant shade and bee forage",
-        "photo": null
+        "photo": null,
+        "duplicateOf": "SMVDU-FL-036",
+        "synonyms": [
+            "Pongamia pinnata"
+        ]
     },
     {
         "id": "SMVDU-FL-153",
@@ -3334,10 +3368,10 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Hardy drought-tolerant groundcover protecting exposed soil from erosion",
         "photo": null
@@ -3345,7 +3379,7 @@ const INITIAL_FLORA_RECORDS = [
     {
         "id": "SMVDU-FL-154",
         "verified": true,
-        "botanicalName": "Combretum indicum (Quisqualis indica)",
+        "botanicalName": "Combretum indicum",
         "commonName": "Rangoon Creeper / Madhumalti",
         "dogriName": "Madhumalti",
         "family": "Combretaceae",
@@ -3355,13 +3389,16 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Color-shifting fragrant tubular flowers pollinated by hawk-moths (nocturnal) and bees (diurnal)",
-        "photo": null
+        "photo": null,
+        "synonyms": [
+            "Quisqualis indica"
+        ]
     },
     {
         "id": "SMVDU-FL-155",
@@ -3376,10 +3413,10 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Showy crimson calycophylls (sepal bracts) attract butterflies and sunbirds",
         "photo": null
@@ -3387,7 +3424,7 @@ const INITIAL_FLORA_RECORDS = [
     {
         "id": "SMVDU-FL-156",
         "verified": true,
-        "botanicalName": "Chlorophytum comosum (or Ophiopogon jaburan)",
+        "botanicalName": "Chlorophytum comosum",
         "commonName": "Ribbon Grass / Spider Plant",
         "dogriName": "Ribbon Ghaas",
         "family": "Asparagaceae",
@@ -3397,18 +3434,21 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Dense fibrous roots bind potting/border soil and filter indoor air pollutants",
-        "photo": null
+        "photo": null,
+        "synonyms": [
+            "Ophiopogon jaburan"
+        ]
     },
     {
         "id": "SMVDU-FL-157",
         "verified": true,
-        "botanicalName": "Rosa × alba / Rosa hybrida",
+        "botanicalName": "Rosa × alba",
         "commonName": "Rose / White Rose",
         "dogriName": "Gulab",
         "family": "Rosaceae",
@@ -3418,13 +3458,16 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
-        "iucn": "LC",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
+        "iucn": "NE",
         "notes": "Pollen source for bees; thorny thickets shelter small birds",
-        "photo": null
+        "photo": null,
+        "synonyms": [
+            "Rosa hybrida"
+        ]
     },
     {
         "id": "SMVDU-FL-158",
@@ -3439,10 +3482,10 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Tall columnar trunks offer nesting cavities for parakeets and owls; fruits feed birds",
         "photo": null
@@ -3460,11 +3503,11 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
-        "iucn": "LC",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
+        "iucn": "NE",
         "notes": "Broad glossy leaves trap particulate dust and improve indoor air quality",
         "photo": null
     },
@@ -3481,10 +3524,10 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Aquatic ecosystem engineer providing shade and refuge for fish, frogs, and waterbirds",
         "photo": null
@@ -3502,10 +3545,10 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Massive nectar source for birds, bats, and bees in late winter; thorny trunk protects nesting birds",
         "photo": null
@@ -3523,10 +3566,10 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Evergreen architectural foliage and indoor VOC air purification",
         "photo": null
@@ -3544,10 +3587,10 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Starry crimson blooms are a magnet for Swallowtail butterflies and sunbirds",
         "photo": null
@@ -3555,7 +3598,7 @@ const INITIAL_FLORA_RECORDS = [
     {
         "id": "SMVDU-FL-164",
         "verified": true,
-        "botanicalName": "Yucca gigantea (Yucca elephantipes)",
+        "botanicalName": "Yucca gigantea",
         "commonName": "Spineless Yucca",
         "dogriName": "Yucca",
         "family": "Asparagaceae",
@@ -3565,18 +3608,21 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Drought-resilient architectural plant for dryland landscaping",
-        "photo": null
+        "photo": null,
+        "synonyms": [
+            "Yucca elephantipes"
+        ]
     },
     {
         "id": "SMVDU-FL-165",
         "verified": true,
-        "botanicalName": "Platycladus orientalis (Thuja orientalis)",
+        "botanicalName": "Platycladus orientalis",
         "commonName": "Oriental Thuja / Morpankhi",
         "dogriName": "Morpankhi",
         "family": "Cupressaceae",
@@ -3586,20 +3632,23 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Dense fan-like evergreen sprays provide year-round nesting cover for small birds",
-        "photo": null
+        "photo": null,
+        "synonyms": [
+            "Thuja orientalis"
+        ]
     },
     {
         "id": "SMVDU-FL-166",
         "verified": true,
         "botanicalName": "Mimosa pudica",
         "commonName": "Touch-Me-Not / Sensitive Plant",
-        "dogriName": "- Chhui-Mui / Lajwanti",
+        "dogriName": "Chhui-Mui / Lajwanti",
         "family": "Fabaceae",
         "habit": "Herb",
         "zone": "",
@@ -3607,10 +3656,10 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Nitrogen-fixing groundcover; thigmonastic leaf-folding demonstrates plant biomechanics",
         "photo": null
@@ -3618,7 +3667,7 @@ const INITIAL_FLORA_RECORDS = [
     {
         "id": "SMVDU-FL-167",
         "verified": true,
-        "botanicalName": "Ocimum tenuiflorum (Ocimum sanctum)",
+        "botanicalName": "Ocimum tenuiflorum",
         "commonName": "Tulsi / Holy Basil",
         "dogriName": "Tulsi",
         "family": "Lamiaceae",
@@ -3628,18 +3677,21 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Aromatic blooms support honeybees and solitary bees",
-        "photo": null
+        "photo": null,
+        "synonyms": [
+            "Ocimum sanctum"
+        ]
     },
     {
         "id": "SMVDU-FL-168",
         "verified": true,
-        "botanicalName": "Heptapleurum arboricola (Schefflera arboricola)",
+        "botanicalName": "Heptapleurum arboricola",
         "commonName": "Dwarf Umbrella Tree",
         "dogriName": "Chhatri Boota",
         "family": "Araliaceae",
@@ -3649,13 +3701,16 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Glossy palmately compound foliage provides dense shade-tolerant greenery",
-        "photo": null
+        "photo": null,
+        "synonyms": [
+            "Schefflera arboricola"
+        ]
     },
     {
         "id": "SMVDU-FL-169",
@@ -3670,18 +3725,18 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
-        "iucn": "LC",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
+        "iucn": "NE",
         "notes": "Prevents slope erosion in rocky/arid soils; towering flower stalk feeds bats and birds",
         "photo": null
     },
     {
         "id": "SMVDU-FL-170",
         "verified": true,
-        "botanicalName": "Polyscias guilfoylei / Polyscias fruticosa",
+        "botanicalName": "Polyscias guilfoylei",
         "commonName": "Variegated Ming Aralia",
         "dogriName": "Aralia",
         "family": "Araliaceae",
@@ -3691,13 +3746,16 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Provides dense, lacy foliage cover in shaded garden borders",
-        "photo": null
+        "photo": null,
+        "synonyms": [
+            "Polyscias fruticosa"
+        ]
     },
     {
         "id": "SMVDU-FL-171",
@@ -3712,10 +3770,10 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Nectar glands on cyathia attract ants, wasps, and hoverflies",
         "photo": null
@@ -3733,10 +3791,10 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Bright yellow trumpet flowers are a major nectar source for bumblebees and sunbirds",
         "photo": null
@@ -3744,7 +3802,7 @@ const INITIAL_FLORA_RECORDS = [
     {
         "id": "SMVDU-FL-173",
         "verified": true,
-        "botanicalName": "Cascabela thevetia (Thevetia peruviana)",
+        "botanicalName": "Cascabela thevetia",
         "commonName": "Yellow Oleander / Kaner",
         "dogriName": "Peela Kaner",
         "family": "Apocynaceae",
@@ -3754,20 +3812,24 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Drought-hardy roadside/campus shrub; flowers visited by butterflies and carpenter bees",
-        "photo": null
+        "photo": null,
+        "duplicateOf": "SMVDU-FL-046",
+        "synonyms": [
+            "Thevetia peruviana"
+        ]
     },
     {
         "id": "SMVDU-FL-174",
         "verified": true,
-        "botanicalName": "Brunfelsia pauciflora / Brunfelsia australis",
+        "botanicalName": "Brunfelsia pauciflora",
         "commonName": "Yesterday-Today-and-Tomorrow",
-        "dogriName": "Brunfelsia / -",
+        "dogriName": "Brunfelsia",
         "family": "Solanaceae",
         "habit": "Shrub",
         "zone": "",
@@ -3775,13 +3837,16 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
         "iucn": "LC",
         "notes": "Color-shifting fragrant flowers (purple to lavender to white) attract butterflies and moths",
-        "photo": null
+        "photo": null,
+        "synonyms": [
+            "Brunfelsia australis"
+        ]
     },
     {
         "id": "SMVDU-FL-175",
@@ -3796,11 +3861,11 @@ const INITIAL_FLORA_RECORDS = [
         "longitude": null,
         "coords": null,
         "elevation": "",
-        "toxicity": "Safe",
-        "toxicAgent": "Non-toxic",
-        "firstAid": "Standard hygiene.",
-        "phenology": "Standard foothill phenological schedule.",
-        "iucn": "LC",
+        "toxicity": "Unknown",
+        "toxicAgent": "",
+        "firstAid": "",
+        "phenology": "",
+        "iucn": "NE",
         "notes": "Bright umbels provide nectar for bees and butterflies in container gardens",
         "photo": null
     }
@@ -3829,8 +3894,18 @@ function openIndexedDB() {
                 store.createIndex('verified', 'verified', { unique: false });
             }
         };
+        request.onblocked = () => {
+            reject(new Error('Close other Green Atlas tabs to finish the database upgrade.'));
+        };
         request.onsuccess = (event) => {
             _dbInstance = event.target.result;
+            _dbInstance.onversionchange = () => {
+                _dbInstance.close();
+                _dbInstance = null;
+            };
+            _dbInstance.onclose = () => {
+                _dbInstance = null;
+            };
             resolve(_dbInstance);
         };
         request.onerror = (event) => reject(event.target.error);
@@ -3853,7 +3928,8 @@ function transactionDone(transaction) {
 }
 
 function numericSpecimenId(record) {
-    const match = String(record && record.id ? record.id : '').match(/(\d+)$/);
+    const idStr = typeof record === 'string' ? record : (record && record.id ? record.id : '');
+    const match = String(idStr).match(/(\d+)$/);
     return match ? parseInt(match[1], 10) : Number.MAX_SAFE_INTEGER;
 }
 
@@ -3865,6 +3941,7 @@ function getNextSpecimenNumber(records) {
     let highest = 0;
     records.forEach((record) => {
         const value = numericSpecimenId(record);
+        if (value === Number.MAX_SAFE_INTEGER) return;
         if (Number.isFinite(value) && value > highest) highest = value;
     });
     return highest + 1;
@@ -3886,6 +3963,13 @@ async function hydrateFloraFromDB() {
             return;
         }
 
+        let reseed = false;
+        try {
+            reseed = localStorage.getItem(SEED_KEY) !== SEED_VERSION;
+        } catch (e) {
+            reseed = true;
+        }
+
         const readTx = db.transaction([STORE_NAME], 'readonly');
         const existing = await requestToPromise(readTx.objectStore(STORE_NAME).getAll());
         const recordsById = new Map();
@@ -3896,9 +3980,9 @@ async function hydrateFloraFromDB() {
         const relocated = [];
 
         /*
-         * V2.3.0 allocated IDs 117+ to locally logged observations. The new
-         * verified datasheet now occupies 117-175, so move those legacy
-         * observations beyond the new seed range instead of overwriting them.
+         * V2.3.0 allocated IDs 117+ to locally logged observations. The verified
+         * datasheet occupies 117-175, so relocate legacy observations beyond 175
+         * instead of overwriting them.
          */
         existing.forEach((record) => {
             const isLegacyObservation = numericSpecimenId(record) > LEGACY_SEED_MAX_ID &&
@@ -3923,11 +4007,8 @@ async function hydrateFloraFromDB() {
 
         INITIAL_FLORA_RECORDS.forEach((seed) => {
             const current = recordsById.get(seed.id);
-            if (!current) {
-                recordsById.set(seed.id, seed);
-                store.put(seed);
-            } else if (current.verified !== seed.verified) {
-                const updated = { ...current, verified: seed.verified };
+            if (!current || reseed || current.verified !== seed.verified) {
+                const updated = { ...seed };
                 recordsById.set(seed.id, updated);
                 store.put(updated);
             }
@@ -3941,6 +4022,10 @@ async function hydrateFloraFromDB() {
         });
 
         await done;
+        try {
+            localStorage.setItem(SEED_KEY, SEED_VERSION);
+        } catch (e) {}
+
         _lastMigrationRelocatedCount = relocated.length;
         _cachedFloraRecords = sortFloraRecords([...recordsById.values()]);
         window.dispatchEvent(new CustomEvent('smvdu:dataready', { detail: _cachedFloraRecords }));
@@ -3955,30 +4040,6 @@ hydrateFloraFromDB();
 
 function getFloraData() {
     return [..._cachedFloraRecords];
-}
-
-async function saveFloraData(records) {
-    if (!Array.isArray(records)) return false;
-
-    try {
-        const db = await openIndexedDB();
-        if (!db) return false;
-
-        const tx = db.transaction([STORE_NAME], 'readwrite');
-        const done = transactionDone(tx);
-        const store = tx.objectStore(STORE_NAME);
-
-        store.clear();
-        records.forEach((record) => store.put(record));
-
-        await done;
-        _cachedFloraRecords = [...records];
-        window.dispatchEvent(new CustomEvent('smvdu:datachanged', { detail: _cachedFloraRecords }));
-        return true;
-    } catch (err) {
-        console.error('[IndexedDB] saveFloraData error:', err);
-        return false;
-    }
 }
 
 function normalizeStoredToxicity(value) {
@@ -4004,6 +4065,11 @@ function hasValidCoordinates(record) {
     });
 }
 
+function isValidPhotoDataUrl(photo) {
+    if (photo == null || photo === '') return true;
+    return typeof photo === 'string' && photo.startsWith('data:image/jpeg;base64,');
+}
+
 async function logObservation(entry) {
     entry = entry && typeof entry === 'object' ? entry : {};
     const records = getFloraData();
@@ -4021,6 +4087,9 @@ async function logObservation(entry) {
     if (!Number.isFinite(lat) || !Number.isFinite(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) {
         return { ok: false, error: 'Valid latitude and longitude are required before saving.' };
     }
+    if (!isValidPhotoDataUrl(entry.photo)) {
+        return { ok: false, error: 'Invalid photo format. Only JPEG data URLs are accepted.' };
+    }
 
     let db;
     try {
@@ -4033,8 +4102,17 @@ async function logObservation(entry) {
         return { ok: false, error: 'Persistent storage is unavailable. The observation was not saved.' };
     }
 
-    let nextNumber = getNextSpecimenNumber(records);
-    const usedIds = new Set(records.map((record) => record.id));
+    let dbKeys = [];
+    try {
+        dbKeys = await requestToPromise(db.transaction([STORE_NAME], 'readonly').objectStore(STORE_NAME).getAllKeys());
+    } catch (err) {
+        console.error('[IndexedDB] Unable to read keys:', err);
+        return { ok: false, error: 'Could not verify existing specimen IDs. Observation not saved.' };
+    }
+
+    const allKnownIds = [...new Set([...dbKeys, ...records.map((r) => r.id), ...INITIAL_FLORA_RECORDS.map((r) => r.id)])];
+    let nextNumber = getNextSpecimenNumber(allKnownIds);
+    const usedIds = new Set(allKnownIds);
     let id = buildSpecimenId(nextNumber);
     while (usedIds.has(id)) {
         nextNumber += 1;
@@ -4066,13 +4144,15 @@ async function logObservation(entry) {
     try {
         const tx = db.transaction([STORE_NAME], 'readwrite');
         const done = transactionDone(tx);
-        tx.objectStore(STORE_NAME).put(newRecord);
+        tx.objectStore(STORE_NAME).add(newRecord);
         await done;
     } catch (err) {
         console.error('[IndexedDB] logObservation error:', err);
         const message = err && err.name === 'QuotaExceededError'
             ? 'Storage quota was exceeded. Reduce the photo size or free browser storage, then retry.'
-            : 'The observation could not be written to persistent storage. It was not saved.';
+            : err && err.name === 'ConstraintError'
+                ? 'A specimen ID collision occurred. Please retry saving.'
+                : 'The observation could not be written to persistent storage. It was not saved.';
         return { ok: false, error: message };
     }
 
@@ -4082,26 +4162,28 @@ async function logObservation(entry) {
 }
 
 function getCampusTelemetry() {
-    const records = getFloraData();
+    const allRecords = getFloraData();
+    const activeRecords = allRecords.filter((record) => !record.duplicateOf);
     const seedIds = new Set(INITIAL_FLORA_RECORDS.map((record) => record.id));
-    const mappedRecords = records.filter(hasValidCoordinates);
-    const loggedObservationCount = records.filter((record) => !seedIds.has(record.id)).length;
+    const mappedRecords = activeRecords.filter(hasValidCoordinates);
+    const loggedObservationCount = activeRecords.filter((record) => !seedIds.has(record.id)).length;
     const toxicityCounts = { Safe: 0, 'Mild Irritant': 0, Toxic: 0, Unknown: 0 };
-    records.forEach((record) => {
+    activeRecords.forEach((record) => {
         toxicityCounts[normalizeStoredToxicity(record.toxicity)] += 1;
     });
 
     return {
-        totalSpecies: new Set(records.map((record) => record.botanicalName).filter(Boolean)).size,
-        totalFamilies: new Set(records.map((record) => record.family).filter(Boolean)).size,
-        records,
+        totalSpecies: new Set(activeRecords.map((record) => record.botanicalName).filter(Boolean)).size,
+        totalFamilies: new Set(activeRecords.map((record) => record.family).filter(Boolean)).size,
+        records: activeRecords,
+        allRecords,
         safeCount: toxicityCounts.Safe,
         irritantCount: toxicityCounts['Mild Irritant'],
         toxicCount: toxicityCounts.Toxic,
         unknownCount: toxicityCounts.Unknown,
-        verifiedCount: records.filter((record) => record.verified === true).length,
+        verifiedCount: activeRecords.filter((record) => record.verified === true).length,
         mappedCount: mappedRecords.length,
-        unmappedCount: records.length - mappedRecords.length,
+        unmappedCount: activeRecords.length - mappedRecords.length,
         loggedObservationCount,
         migratedObservationCount: _lastMigrationRelocatedCount,
         studentObservations: loggedObservationCount

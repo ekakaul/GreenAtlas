@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function isValidCoordinate(coords) {
         if (!Array.isArray(coords) || coords.length !== 2) return false;
+        if (coords[0] === null || coords[1] === null || coords[0] === '' || coords[1] === '') return false;
         const lat = Number(coords[0]);
         const lng = Number(coords[1]);
         return Number.isFinite(lat) && Number.isFinite(lng) &&
@@ -84,24 +85,28 @@ document.addEventListener('DOMContentLoaded', () => {
             color: "#15803d", fillColor: "#22c55e",
             bounds: [[32.94300, 74.95300], [32.94520, 74.95320], [32.94550, 74.95600], [32.94350, 74.95620], [32.94280, 74.95480]],
             dominant: "Pinus roxburghii, Mallotus philippensis, Quercus leucotrichophora",
+            soil: "Sandstone ridge with acidic pine mulch layer",
             desc: "Coniferous high-ridge canopy running along the northern perimeter."
         },
         "Academic Avenue": {
             color: "#a16207", fillColor: "#eab308",
             bounds: [[32.94050, 74.95250], [32.94300, 74.95280], [32.94320, 74.95500], [32.94070, 74.95480]],
             dominant: "Bauhinia variegata, Dalbergia sissoo, Cassia fistula",
+            soil: "Engineered loam and landscaped garden alluvium",
             desc: "Central campus boulevard corridor uniting administrative and lecture complexes."
         },
         "Lower Scrublands": {
             color: "#c2410c", fillColor: "#f97316",
             bounds: [[32.93780, 74.95050], [32.94050, 74.95080], [32.94060, 74.95300], [32.93800, 74.95320]],
             dominant: "Acacia modesta, Calotropis procera, Ziziphus mauritiana",
+            soil: "Dry stony sandstone scree with skeletal soil",
             desc: "Arid south-facing terraces and boundary zones with drought-adapted thickets."
         },
         "Ravine Corridors": {
             color: "#0e7490", fillColor: "#06b6d4",
             bounds: [[32.94060, 74.95560], [32.94350, 74.95540], [32.94330, 74.95820], [32.94060, 74.95840]],
             dominant: "Equisetum ramosissimum, Adiantum capillus-veneris, Salix tetrasperma",
+            soil: "Humid alluvial silt with active water seepages",
             desc: "Deep shaded nullah channels and seasonal drainage corridors."
         }
     };
@@ -246,15 +251,15 @@ document.addEventListener('DOMContentLoaded', () => {
             : String(value == null ? '' : value).trim();
 
         if (tier === 'Toxic') {
-            return { markerClass: 'marker-toxic', chipClass: 'hazard-toxic', label: 'Toxic' };
+            return { markerClass: 'marker-toxic', chipClass: 'hazard-toxic', label: 'Toxic', tier };
         }
         if (tier === 'Mild Irritant') {
-            return { markerClass: 'marker-irritant', chipClass: 'hazard-irritant', label: 'Mild Irritant' };
+            return { markerClass: 'marker-irritant', chipClass: 'hazard-irritant', label: 'Mild Irritant', tier };
         }
         if (tier === 'Safe') {
-            return { markerClass: 'marker-safe', chipClass: 'hazard-safe', label: 'Safe' };
+            return { markerClass: 'marker-safe', chipClass: 'hazard-safe', label: 'Safe', tier };
         }
-        return { markerClass: 'marker-unknown', chipClass: 'hazard-unknown', label: 'Unknown / Not assessed' };
+        return { markerClass: 'marker-unknown', chipClass: 'hazard-unknown', label: 'Unknown / Not assessed', tier: 'Unknown' };
     }
 
     function renderMapMarkers(records) {
@@ -312,6 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
         sectorLayerGroup,
         markerCluster,
         getAllSpecimenMarkers: () => allSpecimenMarkers,
+        getToxicityPresentation,
         renderMapMarkers,
         formatArea,
         formatLength,

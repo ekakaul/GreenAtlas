@@ -26,6 +26,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let activeTier = 'ALL';
 
     function normalizeToxicity(value) {
+        if (typeof window.normalizeStoredToxicity === 'function') {
+            return window.normalizeStoredToxicity(value);
+        }
         const normalized = String(value == null ? '' : value).trim().toLowerCase().replace(/[\s_-]+/g, ' ');
         if (['safe', 'non toxic', 'non-toxic', 'listed non-toxic'].includes(normalized)) return 'Safe';
         if (['mild irritant', 'irritant', 'allergenic'].includes(normalized)) return 'Mild Irritant';
@@ -82,9 +85,11 @@ document.addEventListener('DOMContentLoaded', () => {
         ];
 
         for (const [rawLat, rawLng] of candidates) {
-            const lat = parseFloat(rawLat);
-            const lng = parseFloat(rawLng);
-            if (Number.isFinite(lat) && Number.isFinite(lng)) {
+            if (rawLat === null || rawLng === null || rawLat === '' || rawLng === '') continue;
+            const lat = Number(rawLat);
+            const lng = Number(rawLng);
+            if (Number.isFinite(lat) && Number.isFinite(lng) &&
+                lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
                 return [lat, lng];
             }
         }
@@ -218,8 +223,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const filtered = allRecords.filter(item => {
             const tier = normalizeToxicity(item.toxicity);
             const matchesTier = (activeTier === 'ALL' || tier === activeTier);
+            const synonymsText = Array.isArray(item.synonyms) ? item.synonyms.join(' ') : (item.synonyms || '');
             const matchesSearch = !query ||
+                (item.id && String(item.id).toLowerCase().includes(query)) ||
                 (item.botanicalName && item.botanicalName.toLowerCase().includes(query)) ||
+                (synonymsText && synonymsText.toLowerCase().includes(query)) ||
                 (item.commonName && item.commonName.toLowerCase().includes(query)) ||
                 (item.dogriName && item.dogriName.toLowerCase().includes(query)) ||
                 (item.toxicAgent && item.toxicAgent.toLowerCase().includes(query));

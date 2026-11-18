@@ -204,6 +204,34 @@
         }
 
         /*
+         * Home page live telemetry sync (when js/data.js is loaded).
+         */
+        function syncHomeTelemetry() {
+            const heroTaxa = document.getElementById('hero-stat-taxa');
+            const heroTaxaMeta = document.getElementById('hero-stat-taxa-meta');
+            const heroFamilies = document.getElementById('hero-stat-families');
+            if (!heroTaxa || typeof window.getCampusTelemetry !== 'function') return;
+
+            const telemetry = window.getCampusTelemetry();
+            if (!telemetry) return;
+
+            heroTaxa.textContent = String(telemetry.totalSpecies);
+            if (heroTaxaMeta) {
+                const obsSuffix = telemetry.loggedObservationCount > 0
+                    ? ` · ${telemetry.loggedObservationCount} logged`
+                    : '';
+                heroTaxaMeta.textContent = `${telemetry.verifiedCount} verified · ${telemetry.mappedCount} georeferenced${obsSuffix}`;
+            }
+            if (heroFamilies) {
+                heroFamilies.textContent = String(telemetry.totalFamilies);
+            }
+        }
+
+        syncHomeTelemetry();
+        window.addEventListener('smvdu:dataready', syncHomeTelemetry);
+        window.addEventListener('smvdu:datachanged', syncHomeTelemetry);
+
+        /*
          * Theme toggle handler.
          */
         themeToggleBtn?.addEventListener('click', () => {

@@ -111,8 +111,14 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: 100%;
+    box-sizing: border-box;
     font-size: 0.84rem;
     color: var(--text-dark);
+}
+
+.pinpoint-bar.is-visible {
+    display: flex;
 }
 
 /* --- Map Viewport, Stage & Fullscreen Modes --- */
@@ -516,6 +522,25 @@
     background-color: rgba(45, 106, 48, 0.25) !important;
 }
 
+.sector-select-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    color: var(--primary);
+    font-weight: 700;
+    cursor: pointer;
+    text-align: left;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.sector-select-btn:hover {
+    text-decoration: underline;
+}
+
 /* Tooltip on Hovering Sectors */
 .sector-map-tooltip {
     background: rgba(17, 24, 39, 0.9) !important;
@@ -652,6 +677,18 @@
 
 [data-theme="dark"] .plant-hover-card .ph-btn:hover {
     background: #3f8f45;
+}
+
+/* --- Tablet / Medium Toolbar Responsiveness --- */
+@media (max-width: 1100px) and (min-width: 769px) {
+    .map-control-strip {
+        flex-wrap: wrap;
+        gap: 0.85rem;
+    }
+
+    .map-control-group:last-child {
+        margin-left: 0;
+    }
 }
 
 /* --- Mobile Responsiveness --- */
@@ -801,6 +838,7 @@
 .legend-safe { background: var(--gis-safe); }
 .legend-irritant { background: var(--gis-irritant); }
 .legend-toxic { background: var(--gis-toxic); }
+.legend-unknown { background: var(--gis-unknown); }
 
 .map-legend-divider {
     height: 1px;
@@ -901,16 +939,12 @@
 .pill-btn:focus-visible,
 .layer-option:focus-visible,
 .dropdown-action:focus-visible,
-.sector-table-interactive:focus-visible,
+.sector-select-btn:focus-visible,
 #btn-toggle-pinpoint:focus-visible,
 #btn-clear-pinpoint:focus-visible,
 #btn-copy-coords:focus-visible {
     outline: 2px solid var(--primary);
     outline-offset: 2px;
-}
-
-.sector-table-interactive {
-    outline: none;
 }
 
 /* --- Mobile GIS Controls --- */

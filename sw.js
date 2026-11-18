@@ -4,8 +4,10 @@
  * Shri Mata Vaishno Devi University, Kakryal, Katra
  */
 
-const CACHE_NAME = 'smvdu-green-atlas-v3.1.1';
-const GIS_TILE_CACHE = 'smvdu-green-atlas-gis-tiles-v3';
+const CACHE_NAME = 'smvdu-green-atlas-v3.1.5';
+const GIS_TILE_CACHE = 'smvdu-green-atlas-gis-tiles-v3.1.5';
+const MAX_GIS_TILES = 500;
+const NAV_TIMEOUT_MS = 4000;
 
 // 1. Static App Shell & Core Assets
 const APP_SHELL = [
@@ -47,18 +49,32 @@ const EXTERNAL_DEPENDENCIES = [
     'https://unpkg.com/geographiclib@1.52.1/geographiclib.min.js'
 ];
 
-// =========================================================================
+async function trimTileCache(cache) {
+    const keys = await cache.keys();
+    if (keys.length <= MAX_GIS_TILES) return;
+    const excess = keys.length - MAX_GIS_TILES;
+    for (let i = 0; i < excess; i++) {
+        await cache.delete(keys[i]);
+    }
+}
+
+function fetchWithTimeout(request, timeoutMs) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    return fetch(request, { signal: controller.signal }).finally(() => clearTimeout(timer));
+}
+
 // INSTALL LIFECYCLE
-// =========================================================================
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME).then(async (cache) => {
             console.log('[Service Worker] Pre-caching application shell...');
-            await cache.addAll(APP_SHELL);
+            const shellRequests = APP_SHELL.map((url) => new Request(url, { cache: 'no-cache' }));
+            await cache.addAll(shellRequests);
 
             for (const url of EXTERNAL_DEPENDENCIES) {
                 try {
-                    const response = await fetch(url, { mode: 'cors' });
+                    const response = await fetch(url, { mode: 'cors', cache: 'no-cache' });
                     if (response.ok || response.type === 'opaque') {
                         await cache.put(url, response);
                     }
@@ -70,9 +86,7 @@ self.addEventListener('install', (event) => {
     );
 });
 
-// =========================================================================
 // ACTIVATE LIFECYCLE (Purge Outdated Caches & Claim Clients)
-// =========================================================================
 self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((cacheNames) => {
@@ -88,9 +102,7 @@ self.addEventListener('activate', (event) => {
     );
 });
 
-// =========================================================================
 // FETCH ENGINE (Non-Blocking GIS Pipeline & Resilient Cache Delivery)
-// =========================================================================
 self.addEventListener('fetch', (event) => {
     const request = event.request;
     const url = new URL(request.url);
@@ -101,9 +113,8 @@ self.addEventListener('fetch', (event) => {
     }
 
     // STRATEGY 1: Leaflet GIS Map Tiles (ArcGIS Online)
-    // Non-blocking cache fallback to prevent aborted-request locks during pan/zoom
     const isArcGisHost = url.hostname === 'arcgisonline.com' || url.hostname.endsWith('.arcgisonline.com');
-    const isTilePath = url.pathname.includes('/arcgis/rest/services/') && url.pathname.includes('/MapServer/tile/');
+    const isTilePath = /\/arcgis\/rest\/services\/.+\/mapserver\/tile\//i.test(url.pathname);
 
     if (isArcGisHost && isTilePath) {
         event.respondWith(
@@ -115,8 +126,9 @@ self.addEventListener('fetch', (event) => {
 
                 try {
                     const networkTile = await fetch(request);
-                    if (networkTile && networkTile.status === 200) {
-                        tileCache.put(request, networkTile.clone());
+                    if (networkTile && (networkTile.ok || networkTile.type === 'opaque')) {
+                        await tileCache.put(request, networkTile.clone());
+                        trimTileCache(tileCache).catch(() => {});
                     }
                     return networkTile;
                 } catch (fetchErr) {
@@ -127,11 +139,10 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    // STRATEGY 2: HTML Page Navigations (Network-First with Cache Fallback)
-    // Guarantees immediate delivery of updated DOM/scripts while maintaining offline access
+    // STRATEGY 2: HTML Page Navigations (Network-First with Timeout & Query-Safe Fallback)
     if (request.mode === 'navigate') {
         event.respondWith(
-            fetch(request)
+            fetchWithTimeout(request, NAV_TIMEOUT_MS)
                 .then(async (networkResponse) => {
                     if (networkResponse && networkResponse.status === 200) {
                         const cache = await caches.open(CACHE_NAME);
@@ -140,7 +151,7 @@ self.addEventListener('fetch', (event) => {
                     return networkResponse;
                 })
                 .catch(async () => {
-                    const cachedPage = await caches.match(request);
+                    const cachedPage = await caches.match(request, { ignoreSearch: true });
                     if (cachedPage) return cachedPage;
                     return caches.match('./index.html');
                 })
@@ -148,30 +159,17 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    // STRATEGY 3: Static Assets & Vendor Bundles (Cache-First with Background Update)
+    // STRATEGY 3: Static Assets & Vendor Bundles (Stale-While-Revalidate)
     event.respondWith(
-        caches.match(request).then(async (cachedResponse) => {
-            if (cachedResponse) {
-                return cachedResponse;
-            }
-
-            try {
-                const networkResponse = await fetch(request);
-
-                if (networkResponse && networkResponse.status === 200 && (
-                    request.destination === 'style' ||
-                    request.destination === 'script' ||
-                    request.destination === 'font' ||
-                    request.destination === 'image'
-                )) {
-                    const cache = await caches.open(CACHE_NAME);
-                    cache.put(request, networkResponse.clone());
+        caches.match(request).then((cached) => {
+            const refresh = fetch(request).then((res) => {
+                if (res && res.status === 200 && url.origin === self.location.origin) {
+                    const copy = res.clone();
+                    caches.open(CACHE_NAME).then((c) => c.put(request, copy));
                 }
-
-                return networkResponse;
-            } catch (networkError) {
-                throw networkError;
-            }
+                return res;
+            }).catch(() => cached);
+            return cached || refresh;
         })
     );
 });

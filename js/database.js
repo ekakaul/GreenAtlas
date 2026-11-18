@@ -132,6 +132,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function normalizeToxicity(value) {
+        if (typeof window.normalizeStoredToxicity === 'function') {
+            return window.normalizeStoredToxicity(value);
+        }
         const normalized = normalizeText(value).replace(/[_-]+/g, ' ');
         if (['safe', 'non toxic', 'non-toxic', 'listed non-toxic'].includes(normalized)) return 'Safe';
         if (['mild irritant', 'irritant', 'allergenic'].includes(normalized)) return 'Mild Irritant';
@@ -185,8 +188,9 @@ document.addEventListener('DOMContentLoaded', () => {
             [item.lat, item.lng]
         ];
         for (const [rawLat, rawLng] of candidates) {
-            const lat = parseFloat(rawLat);
-            const lng = parseFloat(rawLng);
+            if (rawLat === null || rawLng === null || rawLat === '' || rawLng === '') continue;
+            const lat = Number(rawLat);
+            const lng = Number(rawLng);
             if (Number.isFinite(lat) && Number.isFinite(lng) &&
                 lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
                 return [lat, lng];
@@ -244,7 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.appendChild(link);
         link.click();
         link.remove();
-        window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+        window.setTimeout(() => URL.revokeObjectURL(url), 1500);
     }
 
     function sanitizeFilename(value) {
@@ -1042,6 +1046,54 @@ document.addEventListener('DOMContentLoaded', () => {
         setText(document.getElementById('modal-card-phenology'), displayPhenology(item.phenology));
         setText(document.getElementById('modal-card-notes'), displayText(item.notes));
 
+        // Botanical synonyms row
+        const synonymsRow = document.getElementById('modal-card-synonyms-row');
+        const synonymsEl = document.getElementById('modal-card-synonyms');
+        const synonymList = Array.isArray(item.synonyms)
+            ? item.synonyms.filter(Boolean).join(', ')
+            : displayText(item.synonyms, '');
+        if (synonymsRow && synonymsEl) {
+            if (synonymList) {
+                synonymsEl.textContent = synonymList;
+                synonymsRow.hidden = false;
+            } else {
+                synonymsEl.textContent = '';
+                synonymsRow.hidden = true;
+            }
+        }
+
+        // Duplicate / voucher cross-reference row
+        const duplicateRow = document.getElementById('modal-card-duplicate-row');
+        const duplicateEl = document.getElementById('modal-card-duplicate');
+        const duplicateRef = displayText(item.duplicateOf, '');
+        if (duplicateRow && duplicateEl) {
+            if (duplicateRef) {
+                duplicateEl.textContent = `Cross-referenced with ${duplicateRef}`;
+                duplicateRow.hidden = false;
+            } else {
+                duplicateEl.textContent = '';
+                duplicateRow.hidden = true;
+            }
+        }
+
+        // Toxicological profile & first aid detail
+        const toxicSection = document.getElementById('modal-card-toxic-section');
+        const toxicDetail = document.getElementById('modal-card-toxic-detail');
+        const agentText = displayText(item.toxicAgent, '');
+        const firstAidText = displayText(item.firstAid, '');
+        if (toxicSection && toxicDetail) {
+            if (agentText || firstAidText) {
+                const parts = [];
+                if (agentText) parts.push(`Active Agent: ${agentText}.`);
+                if (firstAidText) parts.push(`First Aid: ${firstAidText}`);
+                toxicDetail.textContent = parts.join(' ');
+                toxicSection.hidden = false;
+            } else {
+                toxicDetail.textContent = '';
+                toxicSection.hidden = true;
+            }
+        }
+
         const toxicity = document.getElementById('modal-card-toxicity');
         if (toxicity) {
             toxicity.className = `hazard-chip ${toxicityClass(item.toxicity)}`;
@@ -1143,9 +1195,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function recordMatchesQuery(item, query) {
         if (!query) return true;
+        const synonymsText = Array.isArray(item.synonyms) ? item.synonyms.join(' ') : (item.synonyms || '');
         const haystack = normalizeText([
             item.id,
             item.botanicalName,
+            synonymsText,
+            item.duplicateOf,
             item.commonName,
             item.dogriName,
             item.family,
@@ -1407,16 +1462,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const headers = [
-            'Specimen ID', 'Botanical Name', 'Common English Name', 'Dogri Vernacular',
+            'Specimen ID', 'Botanical Name', 'Synonyms', 'Common English Name', 'Dogri Vernacular',
             'Family', 'Habit', 'Sector Zone', 'Elevation', 'Toxicity', 'Verified Status',
             'Latitude (GPS)', 'Longitude (GPS)', 'IUCN Status', 'Phenology', 'Field Notes', 'Portal URL'
         ];
 
         const rows = records.map(record => {
             const coords = getCoords(record);
+            const synonymsText = Array.isArray(record.synonyms)
+                ? record.synonyms.join('; ')
+                : displayText(record.synonyms, '');
             return [
                 csvCell(record.id),
                 csvCell(displayText(record.botanicalName)),
+                csvCell(synonymsText),
                 csvCell(displayText(record.commonName)),
                 csvCell(displayText(record.dogriName)),
                 csvCell(displayText(record.family)),

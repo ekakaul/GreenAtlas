@@ -131,7 +131,7 @@
         <div class="db-filter-console">
             <div class="search-input-wrap">
                 <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                <input type="text" id="flora-search" placeholder="Search by name, family, habit, toxicity, IUCN status, or notes..." aria-label="Search the campus flora database" autocomplete="off">
+                <input type="text" id="flora-search" placeholder="Search by name, synonym, family, habit, toxicity, IUCN, or notes..." aria-label="Search the campus flora database" autocomplete="off">
             </div>
 
             <!-- Filters Dropdown Button -->
@@ -271,6 +271,13 @@
                     <div class="meta-row"><span class="meta-key">Elevation</span><span class="meta-val font-mono" id="modal-card-elevation">840m MSL</span></div>
                     <div class="meta-row"><span class="meta-key">GPS Location</span><span class="meta-val font-mono" id="modal-card-coords">32.94310° N, 74.95420° E</span></div>
                     <div class="meta-row"><span class="meta-key">IUCN Status</span><span class="meta-val" id="modal-card-iucn">Not recorded</span></div>
+                    <div class="meta-row" id="modal-card-synonyms-row" hidden><span class="meta-key">Botanical Synonyms</span><span class="meta-val" id="modal-card-synonyms" style="font-style: italic;"></span></div>
+                    <div class="meta-row" id="modal-card-duplicate-row" hidden><span class="meta-key">Voucher Reference</span><span class="meta-val font-mono" id="modal-card-duplicate"></span></div>
+                </div>
+
+                <div class="modal-text-section" id="modal-card-toxic-section" hidden>
+                    <span class="meta-key">Toxicological Profile &amp; First Aid</span>
+                    <p id="modal-card-toxic-detail" class="modal-text-value"></p>
                 </div>
 
                 <div class="modal-text-section">

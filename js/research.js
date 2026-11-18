@@ -56,8 +56,9 @@ document.addEventListener('DOMContentLoaded', () => {
         ];
 
         for (const [rawLat, rawLng] of candidates) {
-            const lat = parseFloat(rawLat);
-            const lng = parseFloat(rawLng);
+            if (rawLat === null || rawLng === null || rawLat === '' || rawLng === '') continue;
+            const lat = Number(rawLat);
+            const lng = Number(rawLng);
             if (Number.isFinite(lat) && Number.isFinite(lng) &&
                 lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
                 return [lat, lng];
@@ -271,7 +272,6 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             row.addEventListener('click', event => {
-                // Dedicated map links handle their own navigation.
                 if (event.target.closest('a, button')) return;
                 navigate();
             });
@@ -313,12 +313,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const normalizedQuery = normalizeText(query);
             if (!normalizedQuery) return { record: null, error: null };
 
-            const fields = record => [
-                record.id,
-                record.botanicalName,
-                record.commonName,
-                record.dogriName
-            ].map(normalizeText).filter(Boolean);
+            const fields = record => {
+                const synonyms = Array.isArray(record.synonyms) ? record.synonyms : [record.synonyms];
+                return [
+                    record.id,
+                    record.botanicalName,
+                    ...synonyms,
+                    record.commonName,
+                    record.dogriName
+                ].map(normalizeText).filter(Boolean);
+            };
 
             let match = records.find(record => fields(record).some(value => value === normalizedQuery));
             if (!match) {

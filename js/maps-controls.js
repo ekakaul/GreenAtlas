@@ -12,10 +12,11 @@ document.addEventListener('DOMContentLoaded', () => {
         campusAreaM2: totalCampusAreaM2, campusPerimeterM: totalCampusPerimeterM,
         sectorDefinitions: SECTOR_DEFINITIONS, sectorPolygonMap, markerCluster,
         renderMapMarkers, formatArea, formatLength, isValidCoordinate, getAllSpecimenMarkers,
-        getFloraRecords, showMapNotification
+        getFloraRecords, showMapNotification, getToxicityPresentation
     } = GIS;
 
     const sidebar = document.getElementById('map-sector-sidebar');
+    const sectorToggle = document.getElementById('btn-toggle-panel');
     const elSidebarTitle = document.getElementById('sidebar-sector-name');
     const elSidebarDesc = document.getElementById('sidebar-sector-desc');
     const elSidebarDominant = document.getElementById('sidebar-dominant');
@@ -23,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const elSidebarSoil = document.getElementById('sidebar-soil');
     const elSidebarCount = document.getElementById('sidebar-specimen-count');
     const sectorTableRows = document.querySelectorAll('.sector-table-interactive');
+    const sectorRowButtons = document.querySelectorAll('.sector-select-btn');
 
     const btnZoneAll = document.getElementById('filter-zone-all');
     const zoneButtons = [
@@ -33,7 +35,15 @@ document.addEventListener('DOMContentLoaded', () => {
         { btn: document.getElementById('filter-zone-ravine'), zone: 'Ravine Corridors' }
     ];
 
+    let currentActiveZone = 'ALL';
+
+    function setSectorSidebarExpanded(expanded) {
+        sidebar?.classList.toggle('collapsed', !expanded);
+        sectorToggle?.setAttribute('aria-expanded', String(expanded));
+    }
+
     function setActiveZoneUI(zone) {
+        currentActiveZone = zone;
         zoneButtons.forEach(({ btn, zone: buttonZone }) => {
             if (!btn) return;
             const active = buttonZone === zone;
@@ -44,7 +54,26 @@ document.addEventListener('DOMContentLoaded', () => {
         sectorTableRows.forEach(row => {
             const active = zone !== 'ALL' && row.dataset.zone === zone;
             row.classList.toggle('active-sector-row', active);
-            row.setAttribute('aria-pressed', String(active));
+        });
+
+        sectorRowButtons.forEach(btn => {
+            const active = zone !== 'ALL' && btn.dataset.zone === zone;
+            btn.setAttribute('aria-pressed', String(active));
+        });
+    }
+
+    function updateSectorLedgerCounts(allRecords) {
+        const zoneCountMap = {
+            'Pine Ridge Belt': document.getElementById('density-row-pine'),
+            'Academic Avenue': document.getElementById('density-row-avenue'),
+            'Lower Scrublands': document.getElementById('density-row-scrub'),
+            'Ravine Corridors': document.getElementById('density-row-ravine')
+        };
+
+        Object.entries(zoneCountMap).forEach(([zoneName, badgeEl]) => {
+            if (!badgeEl) return;
+            const count = allRecords.filter(r => r.zone === zoneName && isValidCoordinate(r.coords)).length;
+            badgeEl.textContent = count;
         });
     }
 
@@ -58,6 +87,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const elStatElevation = document.getElementById('map-stat-elevation');
         const elStatElevationMeta = document.getElementById('map-stat-elevation-meta');
         const elStatZoneMeta = document.getElementById('map-stat-zone-meta');
+
+        updateSectorLedgerCounts(allRecords);
 
         Object.keys(sectorPolygonMap).forEach(key => {
             const poly = sectorPolygonMap[key];
@@ -85,9 +116,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (elSidebarDesc) elSidebarDesc.textContent = 'Select a sector button above, click a map polygon, or choose a sector row in the table below.';
             if (elSidebarDominant) elSidebarDominant.textContent = 'Campus-wide floral associations';
             if (elSidebarArea) elSidebarArea.textContent = `${formatArea(totalCampusAreaM2)} | Perim: ${formatLength(totalCampusPerimeterM)}`;
-            if (elSidebarSoil) elSidebarSoil.textContent = 'Campus-wide substrate summary';
+            if (elSidebarSoil) elSidebarSoil.textContent = 'Sandstone-clay aggregate, loose gravel hillslopes, rocky dry scree.';
             if (elSidebarCount) elSidebarCount.textContent = `${mappedRecords.length} Mapped Taxa`;
-            sidebar?.classList.add('collapsed');
+            setSectorSidebarExpanded(false);
             return;
         }
 
@@ -103,10 +134,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const matchingRecords = allRecords.filter(r => r.zone === targetZone);
+        const mappedSectorCount = matchingRecords.filter(r => isValidCoordinate(r.coords)).length;
         renderMapMarkers(matchingRecords);
 
-        if (elStatCount) elStatCount.textContent = matchingRecords.length;
-        if (elStatCountMeta) elStatCountMeta.textContent = `${matchingRecords.length} mapped in this sector`;
+        if (elStatCount) elStatCount.textContent = mappedSectorCount;
+        if (elStatCountMeta) elStatCountMeta.textContent = `${mappedSectorCount} mapped in this sector`;
         if (elStatZone) elStatZone.textContent = targetZone;
         if (elStatZoneMeta) elStatZoneMeta.textContent = 'Selected ecological sector';
 
@@ -130,14 +162,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if (elSidebarDesc) elSidebarDesc.textContent = sectorInfo.desc;
         if (elSidebarDominant) elSidebarDominant.textContent = sectorInfo.dominant;
         if (elSidebarArea) elSidebarArea.textContent = `${formatArea(sectorInfo.areaM2)} | Perim: ${formatLength(sectorInfo.perimeterM)}`;
-        if (elSidebarCount) elSidebarCount.textContent = `${matchingRecords.length} Mapped Taxa`;
+        if (elSidebarSoil) elSidebarSoil.textContent = sectorInfo.soil || 'Campus-wide substrate summary';
+        if (elSidebarCount) elSidebarCount.textContent = `${mappedSectorCount} Mapped Taxa`;
 
-        sidebar?.classList.remove('collapsed');
+        setSectorSidebarExpanded(true);
     }
 
     window.addEventListener('smvdu:sector-select', e => {
         if (e.detail) highlightSector(e.detail);
     });
+
+    // Live refresh when IndexedDB seed or new field observations finish loading/updating
+    const handleLiveStoreSync = () => {
+        const elArea = document.getElementById('map-stat-campus-area');
+        if (elArea) elArea.textContent = formatArea(totalCampusAreaM2);
+        highlightSector(currentActiveZone, { restoreViewport: true });
+    };
+    window.addEventListener('smvdu:dataready', handleLiveStoreSync);
+    window.addEventListener('smvdu:datachanged', handleLiveStoreSync);
 
     zoneButtons.forEach(({ btn, zone }) => {
         btn?.addEventListener('click', () => highlightSector(zone));
@@ -229,15 +271,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // ----------------------------------------------------
     // Sidebar + recenter
     // ----------------------------------------------------
-    const sectorToggle = document.getElementById('btn-toggle-panel');
     const legendPanel = document.getElementById('map-legend-panel');
     const legendToggle = document.getElementById('btn-toggle-legend');
     const legendContent = document.getElementById('map-legend-content');
-
-    function setSectorSidebarExpanded(expanded) {
-        sidebar?.classList.toggle('collapsed', !expanded);
-        sectorToggle?.setAttribute('aria-expanded', String(expanded));
-    }
 
     function setLegendExpanded(expanded) {
         legendPanel?.classList.toggle('collapsed', !expanded);
@@ -267,29 +303,36 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btn-recenter-map')?.addEventListener('click', () => highlightSector('ALL'));
 
     // ----------------------------------------------------
-    // Accessible sector table rows
+    // Accessible sector table rows & button triggers
     // ----------------------------------------------------
-    sectorTableRows.forEach(row => {
-        row.tabIndex = 0;
-        row.setAttribute('role', 'button');
-        row.setAttribute('aria-pressed', 'false');
+    function activateSectorFromTable(zoneName) {
+        if (!zoneName) return;
+        highlightSector(zoneName);
+        mapFullscreenWrapper?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
 
-        const activate = () => {
-            const zoneName = row.getAttribute('data-zone');
-            if (zoneName) highlightSector(zoneName);
-        };
-        row.addEventListener('click', activate);
-        row.addEventListener('keydown', e => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                activate();
-            }
+    sectorRowButtons.forEach(btn => {
+        btn.addEventListener('click', e => {
+            e.stopPropagation();
+            activateSectorFromTable(btn.getAttribute('data-zone'));
+        });
+    });
+
+    sectorTableRows.forEach(row => {
+        row.addEventListener('click', () => {
+            activateSectorFromTable(row.getAttribute('data-zone'));
         });
     });
 
     // ----------------------------------------------------
     // GeoJSON export: flora + sector polygons + campus boundary
     // ----------------------------------------------------
+    function isProtectedOrSensitiveTaxon(item) {
+        const name = String(item?.botanicalName || '').toLowerCase();
+        const iucn = String(item?.iucn || '').toUpperCase();
+        return name.includes('cannabis') || name.includes('saraca asoca') || iucn === 'EN' || iucn === 'CR';
+    }
+
     function buildPolygonFeature(name, coords, properties = {}) {
         const ring = coords.map(([lat, lng]) => [lng, lat]);
         if (ring.length && (ring[0][0] !== ring[ring.length - 1][0] || ring[0][1] !== ring[ring.length - 1][1])) {
@@ -309,17 +352,28 @@ document.addEventListener('DOMContentLoaded', () => {
         const features = [];
 
         selectedRecords.filter(item => isValidCoordinate(item.coords)).forEach(item => {
+            const sensitive = isProtectedOrSensitiveTaxon(item);
+            const rawLat = Number(item.coords[0]);
+            const rawLng = Number(item.coords[1]);
+            const exportLng = sensitive ? Number(rawLng.toFixed(3)) : rawLng;
+            const exportLat = sensitive ? Number(rawLat.toFixed(3)) : rawLat;
+            const toxicityInfo = typeof getToxicityPresentation === 'function'
+                ? getToxicityPresentation(item.toxicity)
+                : { tier: typeof normalizeStoredToxicity === 'function' ? normalizeStoredToxicity(item.toxicity) : 'Unknown' };
+
             features.push({
                 type: 'Feature',
-                geometry: { type: 'Point', coordinates: [Number(item.coords[1]), Number(item.coords[0])] },
+                geometry: { type: 'Point', coordinates: [exportLng, exportLat] },
                 properties: {
                     id: item.id,
                     botanicalName: item.botanicalName,
                     commonName: item.commonName,
                     dogriName: item.dogriName || null,
                     zone: item.zone,
-                    toxicity: item.toxicity || 'Safe',
-                    toxicAgent: item.toxicAgent || null
+                    iucn: item.iucn || 'NE',
+                    toxicity: toxicityInfo.tier,
+                    toxicAgent: item.toxicAgent || null,
+                    coordinatePrecision: sensitive ? 'coarsened-100m' : 'survey-point'
                 }
             });
         });
@@ -366,7 +420,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.appendChild(link);
         link.click();
         link.remove();
-        URL.revokeObjectURL(url);
+        setTimeout(() => URL.revokeObjectURL(url), 1500);
         showMapNotification('GeoJSON export prepared successfully.', 'success');
         if (settingsDropdown) settingsDropdown.style.display = 'none';
     });
@@ -400,7 +454,10 @@ document.addEventListener('DOMContentLoaded', () => {
         btnTogglePinpoint?.classList.toggle('active', active);
         btnTogglePinpoint?.setAttribute('aria-pressed', String(active));
         mapElement.style.cursor = active ? 'crosshair' : '';
-        if (pinpointReadout) pinpointReadout.style.display = active ? 'inline-flex' : 'none';
+        if (pinpointReadout) {
+            pinpointReadout.classList.toggle('is-visible', active);
+            pinpointReadout.style.display = active ? 'flex' : 'none';
+        }
         if (!active) clearPinpoint();
     }
 
@@ -543,6 +600,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const records = getFloraRecords();
         const mappedRecords = records.filter(record => isValidCoordinate(record.coords));
         renderMapMarkers(records);
+        updateSectorLedgerCounts(records);
 
         const elCount = document.getElementById('map-stat-active-count');
         const elCountMeta = document.getElementById('map-stat-count-meta');
