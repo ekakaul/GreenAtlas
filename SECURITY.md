@@ -2,26 +2,21 @@
 
 ## Supported Versions
 
-Only the latest deployment served on the `green-atlas-v3.1.1` branch (hereafter referred to as the "main" branch) receives active security updates and vulnerability patches."
-
-| Version / Branch | Supported          |
-| ----------------- | ------------------ |
-| main (Latest)   | :white_check_mark: |
-| Older releases    | :x:                |
+Only the latest release served from the `main` branch (`v3.1.5`) receives active security updates and vulnerability patches.
 
 ---
 
 ## Reporting a Vulnerability
 
-We take the security and integrity of the **SMVDU GREEN ATLAS** platform, its botanical datasets, and its client-side infrastructure seriously.
+We take the security and integrity of the **SMVDU Green Atlas** platform, its botanical datasets, and its client-side infrastructure seriously.
 
-If you identify a security vulnerability (such as Cross-Site Scripting, sensitive data leakage, or service worker integrity issues):
+If you identify a security vulnerability (such as Cross-Site Scripting, Content Security Policy bypasses, sensitive data leakage, or service worker integrity issues):
 
 1. **Do not open a public issue.** Please report the finding privately to prevent exploitation.
 2. Contact the maintainer directly via **GitHub Private Vulnerability Reporting**:
-   - Go to the repository's **Security** tab.
+   - Go to the repository's **Security** tab (`https://github.com/ekakaul/GreenAtlas/security`).
    - Click **Report a vulnerability** to submit an advisory draft.
-   - Alternatively, reach out directly via the email listed on the maintainer's GitHub profile.
+   - Alternatively, reach out via the contact details listed on the maintainer's GitHub profile (`https://github.com/ekakaul`).
 
 ### Please include in your report:
 - A clear description of the vulnerability.
