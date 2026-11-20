@@ -4,8 +4,8 @@
  * Shri Mata Vaishno Devi University, Kakryal, Katra
  */
 
-const CACHE_NAME = 'smvdu-green-atlas-v3.1.6';
-const GIS_TILE_CACHE = 'smvdu-green-atlas-gis-tiles-v3.1.6';
+const CACHE_NAME = 'smvdu-green-atlas-v3.2.0';
+const GIS_TILE_CACHE = 'smvdu-green-atlas-gis-tiles-v3.2.0';
 const MAX_GIS_TILES = 500;
 const NAV_TIMEOUT_MS = 4000;
 

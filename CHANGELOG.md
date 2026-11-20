@@ -1,22 +1,22 @@
 # Changelog
 
-All notable changes to **SMVDU Green Atlas** (formerly **SMVDU Floris**) are documented in this file.
+All notable changes to **SMVDU Green Atlas**
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
-## [3.1.6] - 2026-11-20
+## [3.2.0] - 2026-11-20
 
 ### Added
-- **Native Windows Desktop Installers (Tauri v2):** Built and published native Windows installers for **x64** (`.exe` / `.msi`), **x86 32-bit** (`.exe` / `.msi`), and **ARM64** (`.exe`) alongside the Progressive Web App.
+- **Native Windows Desktop Application (Tauri v2):** Built and published native Windows desktop installers for **x64** (`.exe` / `.msi`), **x86 32-bit** (`.exe` / `.msi`), and **ARM64** (`.exe`) alongside the Progressive Web App for offline campus workstation deployment.
 
 ### Changed
-- **Service Worker Cache Bump (`v3.1.6`):** Updated `sw.js` cache namespaces (`smvdu-green-atlas-v3.1.6` and `smvdu-green-atlas-gis-tiles-v3.1.6`) so returning PWA users automatically purge `v3.1.5` assets and fetch the updated database scripts and stylesheets.
+- **Service Worker Cache Bump (`v3.2.0`):** Updated `sw.js` cache namespaces (`smvdu-green-atlas-v3.2.0` and `smvdu-green-atlas-gis-tiles-v3.2.0`) so returning PWA clients automatically purge stale `v3.1.5` assets and fetch the updated database scripts and stylesheets.
 
 ### Fixed
-- **QR Deep-Link Resolution in Local & Tauri Environments (`js/database.js`):** Resolved `localhost`, `127.0.0.1`, `tauri.localhost`, `tauri:`, and `file:` origins to the public GitHub Pages base URL (`https://ekakaul.github.io/GreenAtlas/`) so generated specimen QR codes and plaques always point to a scannable public link.
-- **Offline QR Download Fallback (`js/database.js`):** Prevented blocked `window.open(..., '_blank')` popup attempts inside Tauri desktop/mobile WebViews when remote QR image fallback downloads fail, displaying an inline offline status message instead.
+- **QR Deep-Link Resolution in Local & Tauri Environments (`js/database.js`):** Resolved `localhost`, `127.0.0.1`, `tauri.localhost`, `tauri:`, and `file:` origins to the public GitHub Pages base URL (`https://ekakaul.github.io/GreenAtlas/`) so generated specimen QR codes and printable plaques always point to a scannable public link.
+- **Offline QR Download Fallback (`js/database.js`):** Prevented blocked `window.open(..., '_blank')` popup attempts inside Tauri desktop and mobile WebViews when remote QR image fallback downloads fail, displaying an inline offline status message instead.
 - **Stylesheet Deduplication & Print Orientation (`css/database.css`):** Removed duplicate `.hazard-unknown` and `.qr-frame img` CSS declarations already defined in `style.css` and aligned plaque print engine documentation with the `6in x 4in` landscape plate layout.
 
 ## [3.1.5] - 2026-11-18

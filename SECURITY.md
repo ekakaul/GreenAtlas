@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-Only the latest release served from the `main` branch (`v3.1.5`) receives active security updates and vulnerability patches.
+Only the latest release served from the `main` branch (`v3.2.0`) receives active security updates and vulnerability patches.
 
 ---
 

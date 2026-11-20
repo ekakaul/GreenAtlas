@@ -1,6 +1,6 @@
 /**
  * SMVDU Green Atlas: Core Data Engine & IndexedDB Storage Architecture
- * Version: 3.1.5
+ * Version: 3.2.0
  * 175 catalogued entries (170 unique taxa after deduplicating 5 synonyms).
  * The IndexedDB name is intentionally unchanged so existing field observations survive upgrades.
  */

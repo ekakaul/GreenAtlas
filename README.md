@@ -2,11 +2,11 @@
 
 > **Identify • Document • Map • Connect**
 
-[![Release](https://img.shields.io/badge/Release-v3.1.6-10b981.svg)](https://github.com/ekakaul/GreenAtlas/releases/tag/v3.1.6)
+[![Release](https://img.shields.io/badge/Release-v3.2.0-10b981.svg)](https://github.com/ekakaul/GreenAtlas/releases/tag/v3.2.0)
 [![Live Portal](https://img.shields.io/badge/Live%20Portal-GitHub%20Pages-1e4620.svg)](https://ekakaul.github.io/GreenAtlas/)
-[![Desktop](https://img.shields.io/badge/Desktop-Windows%20x64%20%7C%20x86%20%7C%20ARM64-0284c7.svg)](https://github.com/ekakaul/GreenAtlas/releases/tag/v3.1.6)
+[![Desktop](https://img.shields.io/badge/Desktop-Windows%20x64%20%7C%20x86%20%7C%20ARM64-0284c7.svg)](https://github.com/ekakaul/GreenAtlas/releases/tag/v3.2.0)
 [![Architecture](https://img.shields.io/badge/Architecture-Static%20PWA%20%2B%20Tauri%20v2-b5835a.svg)](#-tech-stack--architecture)
-[![License](https://img.shields.io/badge/License-MIT-6b7280.svg)](LICENSE)
+[![License](https://img.shields.io/badge/License-GPLv3-6b7280.svg)](LICENSE)
 
 **SMVDU Green Atlas** is an offline-capable Progressive Web Application (PWA), native desktop application, and digital botanical database built to catalog, georeference, and analyze vascular flora across the **Shri Mata Vaishno Devi University (SMVDU)** campus in Kakryal, Katra, Jammu & Kashmir.
 
@@ -15,10 +15,10 @@
 ## 🌐 Live Portal & Desktop Downloads
 
 * **Web Application (PWA):** [ekakaul.github.io/GreenAtlas](https://ekakaul.github.io/GreenAtlas/)
-* **Windows Desktop Installers (`v3.1.6`):** Available on the [GitHub Releases](https://github.com/ekakaul/GreenAtlas/releases/tag/v3.1.6) page:
-  * **Windows 64-bit (`x64` — Intel/AMD):** `SMVDU Green Atlas_3.1.6_x64-setup.exe` (NSIS) or `SMVDU Green Atlas_3.1.6_x64_en-US.msi`
-  * **Windows 32-bit (`x86`):** `SMVDU Green Atlas_3.1.6_x86-setup.exe` (NSIS) or `SMVDU Green Atlas_3.1.6_x86_en-US.msi`
-  * **Windows ARM64 (Snapdragon):** `SMVDU Green Atlas_3.1.6_arm64-setup.exe`
+* **Windows Desktop Installers (`v3.2.0`):** Available on the [GitHub Releases](https://github.com/ekakaul/GreenAtlas/releases/tag/v3.2.0) page:
+  * **Windows 64-bit (`x64` — Intel/AMD):** `SMVDU Green Atlas_3.2.0_x64-setup.exe` (NSIS) or `SMVDU Green Atlas_3.2.0_x64_en-US.msi`
+  * **Windows 32-bit (`x86`):** `SMVDU Green Atlas_3.2.0_x86-setup.exe` (NSIS) or `SMVDU Green Atlas_3.2.0_x86_en-US.msi`
+  * **Windows ARM64 (Snapdragon):** `SMVDU Green Atlas_3.2.0_arm64-setup.exe`
 
 ---
 
@@ -40,7 +40,7 @@
 * **Frontend:** HTML5, CSS3 (Custom Properties, Light/Dark Theme Engine, Print Media Queries), Vanilla JavaScript (ES6+)
 * **Desktop Wrapper:** [Tauri v2](https://v2.tauri.app/) (Rust backend + Microsoft Edge WebView2)
 * **GIS & Geodesy:** [Leaflet.js](https://leafletjs.com/) (`v1.9.4`), [Leaflet.markercluster](https://github.com/Leaflet/Leaflet.markercluster) (`v1.5.3`), [GeographicLib](https://geographiclib.sourceforge.io/) (`v1.52.1`)
-* **Offline & Storage:** Service Worker API (`sw.js`, cache `smvdu-green-atlas-v3.1.6` + 500-tile LRU ArcGIS cache), IndexedDB (`SMVDU_BIO_INDEXED_DB` v4), Web App Manifest (`manifest.json`)
+* **Offline & Storage:** Service Worker API (`sw.js`, cache `smvdu-green-atlas-v3.2.0` + 500-tile LRU ArcGIS cache), IndexedDB (`SMVDU_BIO_INDEXED_DB` v4), Web App Manifest (`manifest.json`)
 * **Security:** Enforcing Content Security Policy (CSP), Subresource Integrity (SRI) SHA-512 hashes, HTML output escaping, and spreadsheet formula guards
 
 ---
@@ -49,13 +49,14 @@
 
 ```text
 .
+├── .gitignore               # Git ignore rules
 ├── index.html               # Landing page & live campus ecological telemetry
 ├── database.html            # Searchable flora database, QR plaques & observation intake
 ├── maps.html                # Interactive GIS vegetation map interface
 ├── research.html            # Evidence-based ecological audit & sector composition
 ├── safety.html              # Clinical toxicity reference & emergency protocols
 ├── manifest.json            # PWA web app manifest & shortcuts
-├── sw.js                    # Offline service worker & ArcGIS tile cache (v3.1.6)
+├── sw.js                    # Offline service worker & ArcGIS tile cache (v3.2.0)
 ├── css/
 │   ├── style.css            # Core design tokens, layout, dark mode & navigation
 │   ├── database.css         # Ledger table, modals & 6"x4" plaque print stylesheet
@@ -74,10 +75,9 @@
 │   └── safety.js            # Toxicity filter pills & hazard triage search
 ├── icons/                   # Favicons, Apple touch icon & maskable PWA icons
 ├── CHANGELOG.md             # Version history and release notes
-├── CITATION.cff             # Academic citation metadata
 ├── CONTRIBUTING.md          # Local setup and contribution guidelines
 ├── SECURITY.md              # Vulnerability disclosure policy
-└── LICENSE                  # Repository license
+└── LICENSE                  # GNU General Public License v3.0
 ```
 
 ---
@@ -98,7 +98,6 @@ Then open `http://localhost:8080` in your browser.
 
 * See [`CONTRIBUTING.md`](CONTRIBUTING.md) for local setup, data schema conventions, and pull request guidelines.
 * See [`SECURITY.md`](SECURITY.md) for reporting vulnerabilities or data-integrity issues.
-* See [`CITATION.cff`](CITATION.cff) to cite this dataset or software in academic work.
 
 ---
 
