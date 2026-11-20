@@ -292,7 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div>ID: <strong>${escapeHtml(item.id)}</strong></div>
                         <div>Zone: <strong>${escapeHtml(item.zone)}</strong></div>
                     </div>
-                    <a href="database.html?search=${encodeURIComponent(item.botanicalName)}" class="ph-btn" target="_blank" rel="noopener noreferrer" style="display: block; text-align: center; background: var(--primary); color: #fff; padding: 0.4rem; border-radius: 4px; font-size: 0.8rem; text-decoration: none;">Open Flora Record</a>
+                    <a href="database.html?q=${encodeURIComponent(item.id)}" class="ph-btn" style="display: block; text-align: center; background: var(--primary); color: #fff; padding: 0.4rem; border-radius: 4px; font-size: 0.8rem; text-decoration: none;">Open Flora Record</a>
                 </div>
             `;
             marker.bindPopup(popupHtml, { maxWidth: 300, className: 'persistent-flora-popup' });

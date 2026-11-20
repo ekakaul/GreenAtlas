@@ -88,6 +88,35 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         /*
+         * Desktop App (Tauri) Back Navigation Button when history exists.
+         */
+        const isTauriApp = Boolean(
+            window.__TAURI__ ||
+            window.__TAURI_INTERNALS__ ||
+            window.location.hostname === 'tauri.localhost' ||
+            window.location.protocol === 'tauri:'
+        );
+
+        if (isTauriApp && window.history.length > 1) {
+            const headerControls =
+                document.querySelector('.header-controls') ||
+                document.getElementById('themeToggleBtn')?.parentElement ||
+                document.querySelector('.home-header');
+
+            if (headerControls && !document.getElementById('tauriBackBtn')) {
+                const backBtn = document.createElement('button');
+                backBtn.id = 'tauriBackBtn';
+                backBtn.type = 'button';
+                backBtn.className = 'theme-toggle-btn';
+                backBtn.setAttribute('aria-label', 'Go back to previous page');
+                backBtn.setAttribute('title', 'Back (Alt + Left Arrow)');
+                backBtn.innerHTML = '<i class="fa-solid fa-arrow-left" aria-hidden="true"></i>';
+                backBtn.addEventListener('click', () => window.history.back());
+                headerControls.prepend(backBtn);
+            }
+        }
+
+        /*
          * Highlight the current navigation item.
          */
         const currentPage = window.location.pathname
@@ -274,9 +303,9 @@
         });
 
         /*
-         * Register service worker.
+         * Register service worker (skip inside Tauri desktop/mobile shell).
          */
-        if ('serviceWorker' in navigator) {
+        if ('serviceWorker' in navigator && !isTauriApp) {
             navigator.serviceWorker.register('sw.js').catch(() => {});
         }
     });

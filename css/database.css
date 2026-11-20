@@ -1,7 +1,7 @@
 /* =========================================================
    SMVDU GREEN ATLAS: HERBARIUM DATABASE STYLESHEET (database.css)
    Table Actions, Card Inspector Modal, Photo Compressor
-   & 4" x 6" Physical Botanical Marker Plaque Print Engine
+   & 6" x 4" Landscape Botanical Marker Plaque Print Engine
    ========================================================= */
 
 /* --- Filter & Action Bar --- */
@@ -126,7 +126,7 @@
 }
 
 /* =========================================================
-   PHYSICAL FIELD PLAQUE PRINT ENGINE (4" x 6" Botanical Plate)
+   PHYSICAL FIELD PLAQUE PRINT ENGINE (6" x 4" Botanical Plate)
    ========================================================= */
 .print-only {
     display: none;
@@ -208,8 +208,8 @@
         gap: 4px 10px;
         font-size: 8pt;
         font-family: 'Courier New', monospace;
-        border-top: 1px dotted #ccc;
-        border-bottom: 1px dotted #ccc;
+        border-top: 1px dotted #cccccc;
+        border-bottom: 1px dotted #cccccc;
         padding: 5px 0;
         margin-bottom: 8px;
     }
@@ -232,7 +232,7 @@
         font-size: 7pt;
         font-family: 'Courier New', monospace;
         color: #777777;
-        border-top: 1px solid #eee;
+        border-top: 1px solid #eeeeee;
         padding-top: 2px;
     }
 }
@@ -245,10 +245,7 @@
 #observation-modal {
     display: none;
     position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
+    inset: 0;
     z-index: 99999;
     align-items: center;
     justify-content: center;
@@ -278,10 +275,6 @@
     border-radius: 8px;
     box-shadow: var(--shadow-lg);
     pointer-events: auto;
-}
-
-#specimen-qr-modal .qr-frame img {
-    image-rendering: pixelated;
 }
 
 /* --- Table Pagination Controls --- */
@@ -796,18 +789,6 @@
 .db-empty-state p {
     font-size: 0.84rem;
     margin-bottom: 0.9rem;
-}
-
-.hazard-chip.hazard-unknown {
-    background: #f1f5f9;
-    color: #475569;
-    border: 1px solid #cbd5e1;
-}
-
-[data-theme="dark"] .hazard-chip.hazard-unknown {
-    background: rgba(148, 163, 184, 0.15);
-    color: #cbd5e1;
-    border-color: rgba(148, 163, 184, 0.4);
 }
 
 #btn-toggle-verified.is-active {

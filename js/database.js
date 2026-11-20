@@ -222,6 +222,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function escapeHtml(value) {
+        if (typeof window.escapeHtml === 'function') {
+            return window.escapeHtml(value);
+        }
         return String(value == null ? '' : value)
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
@@ -483,13 +486,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 return new URL(configured, window.location.href).href.replace(/\/?$/, '/');
             } catch (error) {
                 console.warn('[Green Atlas Database] Invalid green-atlas-base-url meta value:', configured);
-                return null;
             }
+        }
+        // Always use the public GitHub Pages URL when running locally or inside Tauri desktop/mobile
+        if (/^(localhost|127\.0\.0\.1|tauri\.localhost)$/i.test(window.location.hostname) ||
+            window.location.protocol === 'tauri:' ||
+            window.location.protocol === 'file:') {
+            return 'https://ekakaul.github.io/GreenAtlas/';
         }
         if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
             return new URL('./', window.location.href).href;
         }
-        return null;
+        return 'https://ekakaul.github.io/GreenAtlas/';
     }
 
     function getSpecimenDeepLink(id) {
@@ -642,8 +650,18 @@ document.addEventListener('DOMContentLoaded', () => {
             setQrStatus('QR image downloaded.');
         } catch (error) {
             console.warn('[Green Atlas Database] QR download failed:', error);
-            window.open(source, '_blank', 'noopener,noreferrer');
-            setQrStatus('The QR image could not be downloaded automatically. It has been opened in a new tab for saving.');
+            const isTauriApp = Boolean(
+                window.__TAURI__ ||
+                window.__TAURI_INTERNALS__ ||
+                window.location.hostname === 'tauri.localhost' ||
+                window.location.protocol === 'tauri:'
+            );
+            if (!isTauriApp) {
+                window.open(source, '_blank', 'noopener,noreferrer');
+                setQrStatus('The QR image could not be downloaded automatically. It has been opened in a new tab for saving.');
+            } else {
+                setQrError('The QR image could not be downloaded offline. Check your connection and try again.');
+            }
         } finally {
             if (btnDownloadQr) btnDownloadQr.disabled = false;
         }
